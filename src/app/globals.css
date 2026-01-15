@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Your custom theme - replace colors with your Figma design */
+@theme {
+  /* Add at least these basic colors */
+  --color-white: #ffffff;
+  --color-gray-700: #374151;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-primary: #309689;
+  --color-primary-dark: #2a877a;
+}
