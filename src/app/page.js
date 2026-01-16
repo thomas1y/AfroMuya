@@ -1,6 +1,7 @@
 import Navbar from '@/components/layout/Navbar'
 import HeroSection from '@/components/home/HeroSection'
 import CampanyLogos from '@/components/home/CampanyLogos'
+import FeaturedJobs from '@/components/home/FeaturedJobs'
 
 export default function Home() {
   return (
@@ -26,6 +27,10 @@ export default function Home() {
       {/* Rest of homepage WITHOUT background */}
       <div className="bg-white">
         <CampanyLogos />
+      </div>
+
+      <div>
+        <FeaturedJobs />
       </div>
     </main>
   )
