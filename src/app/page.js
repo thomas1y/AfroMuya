@@ -2,6 +2,11 @@ import Navbar from '@/components/layout/Navbar'
 import HeroSection from '@/components/home/HeroSection'
 import CampanyLogos from '@/components/home/CampanyLogos'
 import FeaturedJobs from '@/components/home/FeaturedJobs'
+import JobCategories from '@/components/home/JobCategories'
+import HowItWorks from '@/components/home/HowItWorks'
+import Testimonials from '@/components/home/Testimonials'
+import CallToAction from '@/components/home/CallToAction'
+
 
 export default function Home() {
   return (
@@ -32,6 +37,10 @@ export default function Home() {
       <div>
         <FeaturedJobs />
       </div>
+        <JobCategories />
+        <HowItWorks />
+        <Testimonials />
+        <CallToAction />
     </main>
   )
 }
