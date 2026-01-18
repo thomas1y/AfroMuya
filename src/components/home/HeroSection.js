@@ -1,15 +1,16 @@
 import HeroContent from './HeroContent'
-//import CampanyLogos from './CampanyLogos'
+import HeroSearch from './HeroSearch'
+import HeroStats from './HeroStats'
 
 const HeroSection = () => {
   return (
     <section>
-         <div>
-           <HeroContent />
-           
-         </div>
+      <div className="max-w-[1296px] mx-auto">
+        <HeroContent />
+        <HeroSearch />
+        <HeroStats />
+      </div>
     </section>
-   
   )
 }
 

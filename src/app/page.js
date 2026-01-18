@@ -1,4 +1,4 @@
-import Navbar from '@/components/layout/Navbar'
+//import Navbar from '@/components/layout/Navbar'
 import HeroSection from '@/components/home/HeroSection'
 import CampanyLogos from '@/components/home/CampanyLogos'
 import FeaturedJobs from '@/components/home/FeaturedJobs'
@@ -18,10 +18,7 @@ export default function Home() {
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('/images/hero-bg.jpg')`
         }}
       >
-        {/* Navbar (will have the background behind it) */}
-        <div className="navbar-area">
-          <Navbar />
-        </div>
+        
         
         {/* Hero Section (will have the background behind it) */}
         <div className="hero-area min-h-screen">
