@@ -287,7 +287,7 @@ export default function JobsPage() {
     }
 
     setFilteredJobs(result);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1); 
   }, [searchQuery, filters, sortBy]);
 
   // Pagination
