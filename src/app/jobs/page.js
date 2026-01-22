@@ -6,8 +6,8 @@ import JobCard from '@/components/jobs/JobCard';
 import { useState, useEffect } from 'react';
 
 export default function JobsPage() {
-  // All job data
-  const allJobs = [
+  // State management - Making ALL jobs stateful
+  const [allJobs, setAllJobs] = useState([
     {
       id: 1,
       title: "Senior Frontend Developer",
@@ -188,9 +188,9 @@ export default function JobsPage() {
       experience: "3+ years",
       category: "Sales"
     }
-  ];
+  ]);
 
-  // State management
+  // Other state
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     jobType: [],
@@ -199,6 +199,8 @@ export default function JobsPage() {
     category: [],
     salaryRange: [0, 300000],
     remoteOnly: false,
+    onSiteOnly: false, 
+    hybridOnly: false,
     featuredOnly: false
   });
   const [sortBy, setSortBy] = useState('mostRelevant');
@@ -247,16 +249,40 @@ export default function JobsPage() {
       result = result.filter(job => filters.category.includes(job.category));
     }
 
-    // Salary range filter
+    // Salary range filter (handle hourly contracts differently)
     result = result.filter(job => {
-      const avgSalary = (job.salaryRange[0] + job.salaryRange[1]) / 2;
-      return avgSalary >= filters.salaryRange[0] && avgSalary <= filters.salaryRange[1];
+      const isHourly = job.type === "Contract";
+      if (isHourly) {
+        // For hourly: $80-120/hr * 2080 hours/year = $166,400 - $249,600 yearly
+        const minYearly = job.salaryRange[0] * 2080;
+        const maxYearly = job.salaryRange[1] * 2080;
+        const avgYearly = (minYearly + maxYearly) / 2;
+        return avgYearly >= filters.salaryRange[0] && avgYearly <= filters.salaryRange[1];
+      } else {
+        const avgSalary = (job.salaryRange[0] + job.salaryRange[1]) / 2;
+        return avgSalary >= filters.salaryRange[0] && avgSalary <= filters.salaryRange[1];
+      }
     });
 
     // Remote only filter
     if (filters.remoteOnly) {
       result = result.filter(job => job.isRemote);
     }
+
+    // On-site filter (not remote)
+  if (filters.onSiteOnly) {
+    result = result.filter(job => !job.isRemote);
+  }
+
+  if (filters.hybridOnly) {
+    
+    result = result.filter(job => {
+      // If job has hybrid in title or description
+      return job.title.toLowerCase().includes('hybrid') || 
+             job.description.toLowerCase().includes('hybrid') ||
+             job.location.toLowerCase().includes('hybrid');
+    });
+  }
 
     // Featured only filter
     if (filters.featuredOnly) {
@@ -269,10 +295,18 @@ export default function JobsPage() {
         result.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
         break;
       case 'salaryHighToLow':
-        result.sort((a, b) => b.salaryRange[1] - a.salaryRange[1]);
+        result.sort((a, b) => {
+          const aSalary = a.type === "Contract" ? a.salaryRange[1] * 2080 : b.salaryRange[1];
+          const bSalary = b.type === "Contract" ? b.salaryRange[1] * 2080 : b.salaryRange[1];
+          return bSalary - aSalary;
+        });
         break;
       case 'salaryLowToHigh':
-        result.sort((a, b) => a.salaryRange[0] - b.salaryRange[0]);
+        result.sort((a, b) => {
+          const aSalary = a.type === "Contract" ? a.salaryRange[0] * 2080 : a.salaryRange[0];
+          const bSalary = b.type === "Contract" ? b.salaryRange[0] * 2080 : b.salaryRange[0];
+          return aSalary - bSalary;
+        });
         break;
       case 'mostRelevant':
       default:
@@ -287,8 +321,8 @@ export default function JobsPage() {
     }
 
     setFilteredJobs(result);
-    setCurrentPage(1); 
-  }, [searchQuery, filters, sortBy]);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [searchQuery, filters, sortBy, allJobs]); // Added allJobs to dependencies
 
   // Pagination
   const indexOfLastJob = currentPage * jobsPerPage;
@@ -326,7 +360,7 @@ export default function JobsPage() {
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -358,19 +392,31 @@ export default function JobsPage() {
     return pages;
   };
 
-  // Clear all filters
-  const clearAllFilters = () => {
-    setSearchQuery('');
-    setFilters({
-      jobType: [],
-      location: [],
-      experience: [],
-      category: [],
-      salaryRange: [0, 300000],
-      remoteOnly: false,
-      featuredOnly: false
-    });
-    setSortBy('mostRelevant');
+  // In JobsPage component, update clearAllFilters function:
+const clearAllFilters = () => {
+  setSearchQuery('');
+  setFilters({
+    jobType: [],
+    location: [],
+    experience: [],
+    category: [],
+    salaryRange: [0, 300000],
+    remoteOnly: false,
+    onSiteOnly: false,    
+    hybridOnly: false,     
+    featuredOnly: false
+  });
+  setSortBy('mostRelevant');
+  setCurrentPage(1);
+};
+
+  // Function to toggle job save status (for demo)
+  const handleSaveJob = (jobId) => {
+    setAllJobs(prevJobs => 
+      prevJobs.map(job => 
+        job.id === jobId ? { ...job, saved: !job.saved } : job
+      )
+    );
   };
 
   // Get active filter count
@@ -531,7 +577,7 @@ export default function JobsPage() {
                 <>
                   <div id="job-listings" className="space-y-4">
                     {currentJobs.map((job) => (
-                      <JobCard key={job.id} job={job} />
+                      <JobCard key={job.id} job={job} onSave={() => handleSaveJob(job.id)} />
                     ))}
                   </div>
 
