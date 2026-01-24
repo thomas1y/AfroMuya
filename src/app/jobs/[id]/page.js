@@ -603,7 +603,7 @@ export default function JobDetailsPage() {
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">Find Your Next Tech Job</h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Dice helps tech professionals like you find great jobs with leading companies.
+              AfroMuya helps tech professionals like you find great jobs with leading companies.
             </p>
             <Link
               href="/jobs"

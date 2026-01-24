@@ -3,10 +3,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAppSelector } from '@/lib/redux/hooks';
+import { selectIsLoggedIn, selectCurrentUser } from '@/lib/redux/slices/authSlice';
 
 const Navbar = () => {
   const pathname = usePathname()
   const isHomePage = pathname === '/'
+  
+  // Get auth state from Redux
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const user = useAppSelector(selectCurrentUser);
   
   return (
     <>
@@ -67,20 +73,45 @@ const Navbar = () => {
                 </Link>
               </div>
 
-              {/* Auth Buttons */}
+              {/* Auth Buttons - Conditional based on login state */}
               <div className="flex items-center gap-4">
-                <Link 
-                  href="/login" 
-                  className="text-white/90 hover:text-white font-medium text-sm hidden md:block"
-                >
-                  Sign In
-                </Link>
-                <Link 
-                  href="/signup"
-                  className="bg-gradient-to-r from-[#309689] to-[#2a877a] text-white px-6 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm"
-                >
-                  Get Started
-                </Link>
+                {isLoggedIn ? (
+                  // Show when user is logged in
+                  <div className="flex items-center gap-4">
+                    <Link 
+                      href="/dashboard" 
+                      className="text-white/90 hover:text-white font-medium text-sm"
+                    >
+                      Dashboard
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#309689] to-[#2a877a] flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">
+                          {user?.name?.charAt(0) || 'U'}
+                        </span>
+                      </div>
+                      <span className="text-white text-sm hidden md:block">
+                        {user?.name?.split(' ')[0] || 'User'}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  // Show when user is NOT logged in
+                  <>
+                    <Link 
+                      href="/login" 
+                      className="text-white/90 hover:text-white font-medium text-sm hidden md:block"
+                    >
+                      Sign In
+                    </Link>
+                    <Link 
+                      href="/register"  // ← FIXED: Changed from "/signup" to "/register"
+                      className="bg-gradient-to-r from-[#309689] to-[#2a877a] text-white px-6 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm"
+                    >
+                      Get Started
+                    </Link>
+                  </>
+                )}
               </div>
 
             </div>
