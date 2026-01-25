@@ -1,15 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-import jobReducer from './slices/jobSlice';
-import uiReducer from './slices/uiSlice';
 import userReducer from './slices/userSlice';
+import uiReducer from './slices/uiSlice';
+
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    jobs: jobReducer,
-    ui: uiReducer,
     user: userReducer,
+    ui: uiReducer,
+    
   },
-  devTools: process.env.NODE_ENV !== 'production',
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        
+        ignoredActions: ['user/applyForJob/fulfilled'],
+       
+        ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
+        
+        ignoredPaths: ['user.applications'],
+      },
+    }),
 });
+
