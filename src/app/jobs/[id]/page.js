@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// Mock job data -
+// Mock job data
 const jobData = {
   '1': {
     id: 1,
@@ -36,7 +36,6 @@ const jobData = {
     employmentType: "Employee",
     visaSponsorship: true,
     relocationAssistance: true,
-    
     
     techStack: [
       { name: "React", years: "3+ years", importance: "required" },
@@ -146,6 +145,26 @@ export default function JobDetailsPage() {
   const [hasApplied, setHasApplied] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
+
+  const handleApply = () => {
+    if (hasApplied) {
+      // Already applied
+      return;
+    }
+    
+    setIsApplying(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+      localStorage.setItem('appliedJobs', JSON.stringify([...appliedJobs, job.id]));
+      setHasApplied(true);
+      setIsApplying(false);
+      
+      // Show success message
+      alert('Application submitted successfully!');
+    }, 1000);
+  };
 
   useEffect(() => {
     if (params?.id) {
@@ -315,17 +334,17 @@ export default function JobDetailsPage() {
                   </div>
                 </div>
                 
-                {/*  Match Score */}
+                {/* Match Score */}
                 <div className="bg-[#008638] text-white px-4 py-2 rounded-lg">
                   <div className="text-sm">MATCH Score</div>
                   <div className="text-2xl font-bold">{job.Score}%</div>
                 </div>
               </div>
               
-              {/* Job Actions Row */}
+              {/* Job Actions Row - FIXED: Added closing div tag */}
               <div className="flex flex-wrap items-center gap-4 mb-6">
-                <button
-                  onClick={() => setShowApplicationModal(true)}
+                <Link
+                  href={`/jobs/apply/${job.id}`}
                   className="bg-[#008638] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#006b2d] flex items-center gap-2"
                 >
                   {job.easyApply ? (
@@ -338,7 +357,7 @@ export default function JobDetailsPage() {
                   ) : (
                     'Apply Now'
                   )}
-                </button>
+                </Link>
                 
                 <button
                   onClick={() => setIsSaved(!isSaved)}
@@ -445,7 +464,7 @@ export default function JobDetailsPage() {
               </div>
             </div>
 
-            {/* Additional Info  */}
+            {/* Additional Info */}
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
               <div className="grid grid-cols-2 gap-4">
@@ -471,7 +490,7 @@ export default function JobDetailsPage() {
 
           {/* Sidebar - Right Column (1/3) */}
           <div className="space-y-6">
-            {/* Company Card  */}
+            {/* Company Card */}
             <div className="border border-gray-200 rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#008638]/10 to-[#008638]/20 flex items-center justify-center">
