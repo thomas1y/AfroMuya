@@ -69,7 +69,7 @@ export default function JobsPage() {
       location: "Austin, TX",
       type: "Full-time",
       salary: "$110,000 - $150,000",
-      salaryRange: [110000, 150000],
+      salaryRange: [100000, 150000],
       isFeatured: false,
       isRemote: false,
       isNew: false,
